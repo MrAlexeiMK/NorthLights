@@ -1,0 +1,22 @@
+name: NorthLights
+version: '${project.version}'
+main: me.argentochest.northlights.Main
+api-version: 1.16
+authors: [ ArgentoChest, swat1x ]
+softdepend: [ Vault ]
+commands:
+  setyear:
+  balance:
+    aliases: [ bal ]
+  balancetop:
+    aliases: [ baltop ]
+  pay:
+  money:
+  dpay:
+  dbalance:
+    aliases: [ dbal ]
+  dbalancetop:
+    aliases: [ dbaltop ]
+  dmoney:
+  dshopadd:
+  dshopopen:

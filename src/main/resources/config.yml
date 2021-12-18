@@ -1,0 +1,9 @@
+year: 1500
+balance_top_rows: 10
+start_capital:
+  wars: 100.0
+  lights: 0.0
+mysql:
+  url: jdbc:mysql://localhost:3306/northlights?useSSL=false&autoReconnect=true
+  user: root
+  password: root
