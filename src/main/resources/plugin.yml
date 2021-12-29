@@ -3,7 +3,7 @@ version: '${project.version}'
 main: me.argentochest.northlights.Main
 api-version: 1.16
 authors: [ ArgentoChest, swat1x ]
-softdepend: [ Vault ]
+softdepend: [ Vault, DeluxeMenus, WorldGuard, PlaceholderAPI ]
 commands:
   setyear:
   balance:
@@ -19,4 +19,6 @@ commands:
     aliases: [ dbaltop ]
   dmoney:
   dshopadd:
-  dshopopen:
+  donate:
+  nlreload:
+  dlogs:

@@ -87,5 +87,40 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/libs/Vault.jar</systemPath>
         </dependency>
+        <dependency>
+            <groupId>com.extendedclip</groupId>
+            <artifactId>DeluxeMenus</artifactId>
+            <version>1.0.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/DeluxeMenus.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.sk89q</groupId>
+            <artifactId>WorldGuard</artifactId>
+            <version>1.0.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/worldguard-bukkit-7.0.5-dist.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.palmergames</groupId>
+            <artifactId>Towny</artifactId>
+            <version>1.0.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/Towny-0.97.2.0.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.sk89q</groupId>
+            <artifactId>WorldEdit</artifactId>
+            <version>1.0.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/worldedit-bukkit-7.2.0-beta-02.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>me.clip</groupId>
+            <artifactId>PlaceHolderAPI</artifactId>
+            <version>1.0.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/placeholderapi-2.9.2 (1).jar</systemPath>
+        </dependency>
     </dependencies>
 </project>

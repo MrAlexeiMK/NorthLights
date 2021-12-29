@@ -3,6 +3,7 @@ package me.argentochest.northlights.commands;
 import lombok.var;
 import me.argentochest.northlights.Main;
 import me.argentochest.northlights.other.Pair;
+import me.argentochest.northlights.other.Triple;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -10,23 +11,23 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class DBalanceTopCommand implements CommandExecutor {
+public class DLogsCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if(sender instanceof Player) {
             Player p = (Player) sender;
-            if(p.hasPermission("nl.dbalancetop")) {
-                int rows = Main.getPlugin().getConfig().getInt("balance_top_rows");
-                List<Pair<String, Double>> top = Main.getDB().getTopLights(rows, true);
-                if(top != null) {
-                    int i = 1;
-                    for (var pair : top) {
-                        Main.send(p, "&f" + i + ". &7" + pair.getFirst() + " &f(&e" + pair.getSecond() + "&f)");
-                        ++i;
-                    }
+            if(p.hasPermission("nl.dlogs")) {
+                if(args.length >= 1) {
+                    try {
+                        int count = Integer.parseInt(args[0]);
+                        List<Triple<String, Double, String>> rows = Main.getDB().getLastLogs(count);
+                        for(Triple<String, Double, String> row : rows) {
+                            Main.send(p, row.getFirst() + ", " + row.getSecond() + ", " + row.getThird());
+                        }
+                    } catch (Exception ex) {}
                 }
                 else {
-                    Main.send(p, "&cПопробуйте снова");
+                    Main.send(p, "&7/dlogs [количество]");
                 }
             }
             else {

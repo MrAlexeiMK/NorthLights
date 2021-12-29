@@ -18,23 +18,10 @@ import java.util.Map;
 @Data
 public class GUI {
     private List<Inventory> inventoryList;
-    private ItemStack left, right, info;
     private Map<ItemStack, Pair<String, Double>> actionMap;
 
     public GUI() {
         actionMap = new HashMap<>();
-        left = new ItemStack(Material.SLIME_BALL);
-        ItemMeta meta = left.getItemMeta();
-        meta.setDisplayName("§c§l←");
-        left.setItemMeta(meta);
-
-        right = new ItemStack(Material.SLIME_BALL);
-        meta = right.getItemMeta();
-        meta.setDisplayName("§c§l→");
-        right.setItemMeta(meta);
-
-        info = new ItemStack(Material.OAK_SIGN);
-
         inventoryList = new ArrayList<>();
         ConfigurationSection cs = Main.getPlugin().getShop().getConfigurationSection("guis");
         for(String key : cs.getKeys(false)) {
@@ -50,15 +37,28 @@ public class GUI {
                 ItemStack it = Main.getPlugin().getShop().getItemStack("guis."+key+".item").clone();
 
                 List<String> lore = new ArrayList<>();
-                lore.add("§7Цена: §6"+price + " §bЛайтов");
-                meta = it.getItemMeta();
-                meta.setLore(lore);
-                it.setItemMeta(meta);
+                if(it != null && it.getItemMeta() != null && it.getItemMeta().getLore() != null) {
+                    if (!it.getItemMeta().getLore().isEmpty()) {
+                        for (String r : it.getItemMeta().getLore()) {
+                            if (!r.contains("Цена")) {
+                                lore.add(r.replaceAll("&", "§"));
+                            }
+                        }
+                    }
+                }
+                if(price > 0.0) lore.add("§7Цена: §6" + price + " §bЛайтов");
+                ItemMeta meta = it.getItemMeta();
+                if(meta != null) {
+                    meta.setDisplayName(meta.getDisplayName().replaceAll("&", "§"));
+                    meta.setLore(lore);
+                    it.setItemMeta(meta);
+                }
 
                 actionMap.put(it, new Pair<>(action, price));
                 inventoryList.get(gui-1).setItem(slot, it);
             } catch (Exception e) {
-                Main.getPlugin().getLogger().warning("Ключи в shop.yml заданы некорректно");
+                Main.getPlugin().getLogger().warning("Ключи в shop.yml заданы некорректно, лог ошибки:");
+                e.printStackTrace();
             }
         }
     }
@@ -69,23 +69,12 @@ public class GUI {
     }
 
     public Inventory getDefault(int page) {
-        Inventory def = Bukkit.createInventory(null, 9*5, "§eМагазин §f(§bЛайты§f)");
-        ItemMeta meta = info.getItemMeta();
-        meta.setDisplayName("§eСтраница: §c"+page);
-        info.setItemMeta(meta);
-
-        for(int i = 27; i < 36; ++i) {
-            def.setItem(i, new ItemStack(Material.BLACK_STAINED_GLASS));
-        }
-        def.setItem(44, right);
-        def.setItem(36, left);
-        def.setItem(40, info);
+        Inventory def = Bukkit.createInventory(null, 9*Main.getPlugin().getRows(page), "§eМагазин §f(§bЛайты§f)");
         return def;
     }
-
     public void addItem(int page, int slot, double price, String cmd, ItemStack it) {
         List<String> lore = new ArrayList<>();
-        lore.add("§7Цена: §6"+price + " §bЛайтов");
+        if(price > 0.0) lore.add("§7Цена: §6"+price + " §bЛайтов");
         ItemMeta meta = it.getItemMeta();
         meta.setLore(lore);
         it.setItemMeta(meta);

@@ -5,12 +5,29 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 public class MoneyCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if(sender instanceof Player) {
+        if(sender instanceof ConsoleCommandSender) {
+            if(args.length >= 3) {
+                if(args[0].equalsIgnoreCase("give")) {
+                    try {
+                        double wars = Double.parseDouble(args[2]);
+                        Main.getDB().addWars(args[1], wars);
+                    } catch (Exception e) {}
+                }
+                else if(args[0].equalsIgnoreCase("remove")) {
+                    try {
+                        double wars = Double.parseDouble(args[2]);
+                        Main.getDB().removeWars(args[1], wars);
+                    } catch (Exception e) {}
+                }
+            }
+        }
+        else if(sender instanceof Player) {
             Player p = (Player) sender;
             if(args.length == 0) {
                 if(p.hasPermission("nl.balance")) {

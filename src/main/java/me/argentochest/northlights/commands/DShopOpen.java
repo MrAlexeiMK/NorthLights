@@ -13,8 +13,10 @@ public class DShopOpen implements CommandExecutor {
         if(sender instanceof Player) {
             Player p = (Player) sender;
             if(p.hasPermission("nl.dshopopen")) {
+                int page = Main.getPlugin().getConfig().getInt("start_page");
                 if(!Main.getPlugin().getGUI().getInventoryList().isEmpty()) {
-                    p.openInventory(Main.getPlugin().getGUI().getInventoryList().get(0));
+                    p.closeInventory();
+                    p.openInventory(Main.getPlugin().getGUI().getInventoryList().get(page-1));
                 }
                 else {
                     Main.send(p, "&7Магазин пуст");

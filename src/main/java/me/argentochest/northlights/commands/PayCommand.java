@@ -17,7 +17,7 @@ public class PayCommand implements CommandExecutor {
                     Player pl = Bukkit.getPlayer(args[0]);
                     if(pl != null && pl.isOnline()) {
                         try {
-                            double wars = Double.parseDouble(args[1]);
+                            long wars = Long.parseLong(args[1]);
                             if(Main.getDB().getWars(p.getName()) >= wars) {
                                 Main.getDB().removeWars(p.getName(), wars);
                                 Main.getDB().addWars(pl.getName(), wars);

@@ -17,7 +17,7 @@ public class DPayCommand implements CommandExecutor {
                     Player pl = Bukkit.getPlayer(args[0]);
                     if(pl != null && pl.isOnline()) {
                         try {
-                            double lights = Double.parseDouble(args[1]);
+                            long lights = Long.parseLong(args[1]);
                             if(Main.getDB().getLights(p.getName()) >= lights) {
                                 Main.getDB().removeLights(p.getName(), lights);
                                 Main.getDB().addLights(pl.getName(), lights);
