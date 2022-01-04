@@ -15,6 +15,7 @@ public class ReloadCommand implements CommandExecutor {
             Main.getPlugin().getLangFile().reloadConfig();
             Main.getPlugin().getShopFile().reloadConfig();
             Main.getPlugin().initGUI();
+            Main.getPlugin().initTeleports();
             if(sender instanceof Player) {
                 Player p = (Player) sender;
                 Main.send(p, "&aПерезагружено");

@@ -82,7 +82,7 @@ public class DB {
         String query = "SELECT wars FROM "+wars_table+" WHERE player = '"+p_name + "'";
         try (Statement stmt = con.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
             rs.next();
-            return rs.getDouble(1);
+            return Math.round(rs.getDouble(1)*100)/100.0;
         } catch (SQLException e) {}
         return 0;
     }
@@ -135,7 +135,7 @@ public class DB {
         String query = "SELECT lights FROM "+lights_table+" WHERE player = '"+p_name + "'";
         try (Statement stmt = con.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
             rs.next();
-            return rs.getDouble(1);
+            return Math.round(rs.getDouble(1)*100)/100.0;
         } catch (SQLException e) {}
         return 0;
     }
@@ -181,7 +181,7 @@ public class DB {
             int i = 0;
             while(rs.next() && i < last_rows) {
                 String nick = rs.getString("player");
-                double val = rs.getDouble("lights");
+                double val = Math.round(rs.getDouble("lights")*100)/100.0;
                 String action = rs.getString("action");
                 Triple<String, Double, String> triple = new Triple<>(nick, val, action);
                 last.add(triple);
@@ -202,7 +202,7 @@ public class DB {
             int i = 0;
             while(rs.next() && i < max_rows) {
                 String nick = rs.getString("player");
-                double val = rs.getDouble("lights");
+                double val = Math.round(rs.getDouble("lights")*100)/100.0;
                 Pair<String, Double> pair = new Pair<>(nick, val);
                 top.add(pair);
                 ++i;

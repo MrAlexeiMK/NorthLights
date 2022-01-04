@@ -18,7 +18,7 @@ public class DPayCommand implements CommandExecutor {
                     if(pl != null && pl.isOnline()) {
                         try {
                             long lights = Long.parseLong(args[1]);
-                            if(Main.getDB().getLights(p.getName()) >= lights) {
+                            if(Main.getDB().getLights(p.getName()) >= lights && lights > 0.0) {
                                 Main.getDB().removeLights(p.getName(), lights);
                                 Main.getDB().addLights(pl.getName(), lights);
                                 Main.send(p, Main.getPlugin().getLang().getString("dpay_to_player").

@@ -15,10 +15,12 @@ import me.argentochest.northlights.commands.*;
 import me.argentochest.northlights.configs.Config;
 import me.argentochest.northlights.configs.Lang;
 import me.argentochest.northlights.configs.Shop;
+import me.argentochest.northlights.configs.Teleports;
 import me.argentochest.northlights.handlers.BarHandler;
 import me.argentochest.northlights.handlers.EventsHandler;
 import me.argentochest.northlights.handlers.FixHandler;
 import me.argentochest.northlights.other.GUI;
+import me.argentochest.northlights.other.Loc;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -41,10 +43,13 @@ public class Main extends JavaPlugin {
     private static Config config;
     private static Lang lang;
     private static Shop shop;
+    private static Teleports teleports;
     private static GUI gui;
     private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
     private static WorldGuardPlugin worldGuard = null;
     private static Map<String, Long> above_cooldowns;
+    private static Map<Loc, Loc> tunnels;
+    private static Map<String, Long> hitTimePlayer;
     public static final List<Material> logs = new ArrayList<>(Arrays.asList(
             Material.ACACIA_LOG,
             Material.BIRCH_LOG,
@@ -61,6 +66,7 @@ public class Main extends JavaPlugin {
             Material.DARK_OAK_LEAVES,
             Material.SPRUCE_LEAVES
     ));
+    private static Inventory NGInventory;
 
     @Override
     public void onEnable() {
@@ -73,12 +79,17 @@ public class Main extends JavaPlugin {
         config = new Config();
         lang = new Lang();
         shop = new Shop();
+        teleports = new Teleports();
         above_cooldowns = new HashMap<>();
+        hitTimePlayer = new HashMap<>();
+        tunnels = new HashMap<>();
+        NGInventory = Bukkit.createInventory(null, 9*6, "Admin's Inventory");
         if(Bukkit.getPluginManager().getPlugin("WorldGuard") != null) {
             worldGuard = (WorldGuardPlugin) Bukkit.getPluginManager().getPlugin("WorldGuard");
         }
         initGUI();
         initDB();
+        initTeleports();
         Bukkit.getPluginManager().registerEvents(new FixHandler(), this);
         Bukkit.getPluginManager().registerEvents(new BarHandler(), this);
         Bukkit.getPluginManager().registerEvents(new EventsHandler(), this);
@@ -105,6 +116,9 @@ public class Main extends JavaPlugin {
         getCommand("donate").setExecutor(new DShopOpen());
         getCommand("nlreload").setExecutor(new ReloadCommand());
         getCommand("dlogs").setExecutor(new DLogsCommand());
+        getCommand("blocktp").setExecutor(new BlockTPCommand());
+        getCommand("ng").setExecutor(new NGCommand());
+        getCommand("attention").setExecutor(new AttentionCommand());
 
         startThreads();
 
@@ -135,12 +149,41 @@ public class Main extends JavaPlugin {
         return gui;
     }
 
+    public static Inventory getNGInventory() {
+        return NGInventory;
+    }
+
     public static DB getDB() {
         return db;
     }
 
+    public static Map<Loc, Loc> getTunnels() {
+        return tunnels;
+    }
+
+    public static Map<String, Long> getHitTimePlayer() {
+        return hitTimePlayer;
+    }
+
+    public static void putHitTimePlayer(Player p) {
+        if(hitTimePlayer.containsKey(p.getName())) {
+            hitTimePlayer.replace(p.getName(), System.currentTimeMillis()/1000);
+        }
+        else {
+            hitTimePlayer.put(p.getName(), System.currentTimeMillis()/1000);
+        }
+    }
+
     public FileConfiguration getConfig() {
         return config.getConfig();
+    }
+
+    public Teleports getTeleportsFile() {
+        return teleports;
+    }
+
+    public FileConfiguration getTeleports() {
+        return teleports.getConfig();
     }
 
     public Config getConfigFile() {
@@ -250,6 +293,20 @@ public class Main extends JavaPlugin {
         String wars_table = getConfig().getString("mysql.wars_table");
         String lights_table = getConfig().getString("mysql.lights_table");
         db = new DB(url, user, password, wars_table, lights_table);
+    }
+
+    public void initTeleports() {
+        if(getTeleports().contains("list")) {
+            List<String> list = (List<String>) getTeleports().get("list");
+            for(String row : list) {
+                String[] arr = row.split("\\|");
+                Loc loc1 = new Loc(arr[0]);
+                Loc loc2 = new Loc(arr[1]);
+                if(!tunnels.containsKey(loc1)) {
+                    tunnels.put(loc1, loc2);
+                }
+            }
+        }
     }
 
     public void startThreads(){

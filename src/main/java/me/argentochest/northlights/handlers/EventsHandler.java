@@ -3,6 +3,7 @@ package me.argentochest.northlights.handlers;
 import com.extendedclip.deluxemenus.menu.Menu;
 import me.argentochest.northlights.Main;
 import me.argentochest.northlights.other.GUI;
+import me.argentochest.northlights.other.Loc;
 import me.argentochest.northlights.other.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -14,12 +15,15 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -169,6 +173,59 @@ public class EventsHandler implements Listener {
     public void closeInv(InventoryCloseEvent e) {
         Player p = (Player) e.getPlayer();
         p.updateInventory();
+    }
+
+    @EventHandler
+    public void onMove(PlayerMoveEvent e) {
+        Player p = e.getPlayer();
+        Location l = e.getTo().getBlock().getLocation();
+        Loc from = new Loc(l);
+        if(Main.getTunnels().containsKey(from)) {
+            Loc to = Main.getTunnels().get(from);
+            p.teleport(to.getLoc());
+            p.playSound(p.getLocation(), Sound.ENTITY_ENDER_PEARL_THROW, 1, 1);
+        }
+        if(Main.getHitTimePlayer().containsKey(p.getName())) {
+            long time1 = System.currentTimeMillis()/1000;
+            long time2 = Main.getHitTimePlayer().get(p.getName());
+            if(time1 - time2 <= 7) {
+                if(p.isFlying()) {
+                    p.setFlying(false);
+                }
+            }
+            else {
+                Main.getHitTimePlayer().remove(p.getName());
+            }
+        }
+    }
+
+    @EventHandler
+    public void onCmd(PlayerCommandPreprocessEvent e) {
+        Player p = e.getPlayer();
+        if(Main.getHitTimePlayer().containsKey(p.getName())) {
+            long time1 = System.currentTimeMillis()/1000;
+            long time2 = Main.getHitTimePlayer().get(p.getName());
+            if(time1 - time2 <= 7) {
+                e.setCancelled(true);
+            }
+            else {
+                Main.getHitTimePlayer().remove(p.getName());
+            }
+        }
+    }
+
+    @EventHandler
+    public void hitPlayer(EntityDamageByEntityEvent e) {
+        if(e.getEntity() instanceof Player && e.getDamager() instanceof Player) {
+            Player p1 = (Player) e.getEntity();
+            Player p2 = (Player) e.getDamager();
+            if(Main.getHitTimePlayer().containsKey(p1.getName())) {
+                Main.putHitTimePlayer(p1);
+            }
+            if(Main.getHitTimePlayer().containsKey(p2.getName())) {
+                Main.putHitTimePlayer(p2);
+            }
+        }
     }
 
     @EventHandler

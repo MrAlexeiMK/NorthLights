@@ -59,6 +59,23 @@ public class MoneyCommand implements CommandExecutor {
                         Main.send(p, Main.getPlugin().getLang().getString("no_pex"));
                     }
                 }
+                else if(args[0].equalsIgnoreCase("set")) {
+                    if(p.hasPermission("nl.money.set")) {
+                        Player pl = Bukkit.getPlayer(args[1]);
+                        if(pl != null && pl.isOnline()) {
+                            try {
+                                double wars = Double.parseDouble(args[2]);
+                                Main.getDB().setWars(pl.getName(), wars);
+                                Main.send(p, "&aУспешно");
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    else {
+                        Main.send(p, Main.getPlugin().getLang().getString("no_pex"));
+                    }
+                }
                 else if(args[0].equalsIgnoreCase("remove")) {
                     if(p.hasPermission("nl.money.remove")) {
                         Player pl = Bukkit.getPlayer(args[1]);

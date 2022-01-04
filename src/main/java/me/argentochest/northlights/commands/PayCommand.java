@@ -18,7 +18,7 @@ public class PayCommand implements CommandExecutor {
                     if(pl != null && pl.isOnline()) {
                         try {
                             long wars = Long.parseLong(args[1]);
-                            if(Main.getDB().getWars(p.getName()) >= wars) {
+                            if(Main.getDB().getWars(p.getName()) >= wars && wars > 0.0) {
                                 Main.getDB().removeWars(p.getName(), wars);
                                 Main.getDB().addWars(pl.getName(), wars);
                                 Main.send(p, Main.getPlugin().getLang().getString("pay_to_player").
